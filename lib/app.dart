@@ -7,3 +7,5 @@ export 'package:dmood/views/explore_page.dart';
 export 'package:dmood/views/home_container_screen.dart';
 export 'package:dmood/views/home_page.dart';
 export 'package:dmood/views/home_tab_container_page.dart';
+export 'package:dmood/widgets/widgets/app_bar/custom_image_view.dart';
+
