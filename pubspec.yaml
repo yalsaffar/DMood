@@ -20,8 +20,4 @@ flutter:
   assets: 
     - assets/
     - assets/images/
-  fonts: 
-    - family: ABeeZee
-      fonts: 
-        - asset: assets/fonts/ABeeZeeItalic.ttf
-          weight: 400
+ 
