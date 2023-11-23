@@ -13,7 +13,7 @@ class DynamoDBHandler {
       secretKey: dotenv.env['aws_secret_access_key']!,
     );
       
-    _dynamoDb = DynamoDB(region: dotenv.env['AWS_REGION']!, credentials: credentials);
+    _dynamoDb = DynamoDB(region: dotenv.env['aws_region']!, credentials: credentials);
   }
 
    Future<void> addNewUser(String tableName, Map<String, AttributeValue> userData) async {
