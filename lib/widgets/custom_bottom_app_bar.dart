@@ -1,7 +1,9 @@
 import 'package:dmood/app.dart';
+import 'package:dmood/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/utils/image_constant_utils.dart';
 import 'package:dmood/utils/size_utils.dart';
+import 'package:dmood/views/user_profile_screen.dart';
 
 class CustomBottomAppBar extends StatefulWidget {
   CustomBottomAppBar({this.onChanged});
@@ -58,8 +60,18 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
                     element.isSelected = false;
                   }
                   bottomMenuList[index].isSelected = true;
-                  widget.onChanged?.call(bottomMenuList[index].type);
                   setState(() {});
+
+                  if (bottomMenuList[index].type == BottomBarEnum.User) {
+                    // Navigate to UserProfileScreen when the User icon is clicked
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => UserProfileScreen()),
+                    );
+                  } else {
+                    // Trigger onChanged for other icons
+                    widget.onChanged?.call(bottomMenuList[index].type);
+                  }
                 },
                 child: bottomMenuList[index].isSelected
                     ? CustomImageView(
@@ -77,6 +89,19 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
             },
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DefaultWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(10),
+      child: Center(
+        
       ),
     );
   }
@@ -107,26 +132,9 @@ class BottomMenuModel {
   bool isSelected;
 }
 
-class DefaultWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.all(10),
-      child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Please replace the respective Widget here',
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+
+
+
+
+
+
