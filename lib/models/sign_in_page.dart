@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../services/dynamo_db_handler.dart';
 import 'sign_up_page.dart';
-import '../services/dynamo_db_handler.dart'; // Make sure this path is correct
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'welcome_page.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -38,36 +39,41 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Future<void> _login() async {
+    print('Login attempt started.');
     final _dynamoDBHandler = DynamoDBHandler();
 
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text.trim();
       final password = _passwordController.text;
 
-      print('Attempting to log in with $email and $password');
+      print('Valid form. Attempting to log in with $email.');
 
       try {
-        final userInfo = await _dynamoDBHandler.getUserInfo('YourTableName', email);
+        final userInfo = await _dynamoDBHandler.getUserInfo('Dmood_users', email);
         print('User info retrieved: $userInfo');
 
         if (userInfo != null && userInfo['password']?.s == password) {
-          print('Login successful');
-          setState(() {
-            _isLoggedIn = true;
-          });
+        print('Login successful');
+        Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => WelcomePage()),
+      (Route<dynamic> route) => false,
+    );
           _showDialog('Login Success', 'Signed in!!!');
         } else {
           print('Wrong email or password');
           _showDialog('Login Failed', 'Wrong email or password');
         }
       } catch (e) {
-        print('An error occurred: $e');
+        print('An error occurred during login: $e');
         _showDialog('Error', 'An error occurred. Please try again.');
       }
+    } else {
+      print('Form is not valid');
     }
   }
 
   void _showDialog(String title, String content) {
+    print('Showing dialog: $title');
     showDialog(
       context: context,
       builder: (context) {
@@ -76,7 +82,10 @@ class _SignInPageState extends State<SignInPage> {
           content: Text(content),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                print('Dialog closed.');
+                Navigator.of(context).pop();
+              },
               child: Text('OK'),
             ),
           ],
