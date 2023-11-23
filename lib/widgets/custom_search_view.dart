@@ -1,7 +1,7 @@
 import 'package:dmood/app.dart';
 import 'package:flutter/material.dart';
-import 'package:dmood/utils/image_constant_utils.dart';
 import 'package:dmood/utils/size_utils.dart';
+import 'package:dmood/utils/image_constant_utils.dart';
 
 class CustomSearchView extends StatelessWidget {
   CustomSearchView({

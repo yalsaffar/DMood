@@ -1,7 +1,8 @@
-import 'package:dmood/widgets/widgets/app_bar/custom_search_view.dart';
+import 'package:dmood/widgets/custom_search_view.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/utils/size_utils.dart';
 import 'package:dmood/localization/app_localization.dart';
+
 
 // ignore: must_be_immutable
 class AppbarTitleSearchview extends StatelessWidget {

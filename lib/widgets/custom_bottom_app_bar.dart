@@ -1,10 +1,8 @@
 import 'package:dmood/app.dart';
 import 'package:flutter/material.dart';
-import 'package:dmood/utils/size_utils.dart';
 import 'package:dmood/utils/image_constant_utils.dart';
+import 'package:dmood/utils/size_utils.dart';
 
-
-// ignore: must_be_immutable
 class CustomBottomAppBar extends StatefulWidget {
   CustomBottomAppBar({this.onChanged});
 
