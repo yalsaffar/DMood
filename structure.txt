@@ -1,0 +1,69 @@
+C:.
+│   app.dart
+│   main.dart
+│
+├───controllers
+│       auth_controller.dart
+│       post_controller.dart
+│
+├───localization
+│       app_localization.dart
+│       en_us_translation.dart
+│
+├───models
+│       posts.dart
+│       users.dart
+│
+├───pages
+│       change_password_page.dart
+│       sign_in_page.dart
+│       sign_up_page.dart
+│       welcome_page.dart
+│       account_page.dart
+│       explore_page.dart
+│       home_page.dart
+│       user_profile_screen.dart
+│
+├───routes
+│       app_routes.dart
+│
+├───services
+│       database.dart
+│       dynamo_db_handler.dart
+│       s3_handler.dart
+│       storage.dart
+│       testing_dynamo.dart
+│
+├───shared
+│   │   preferences.dart
+│   │
+│   └───theme
+│           app_decoration.dart
+│           custom_text_style.dart
+│           theme_helper.dart
+│
+├───utils
+│       date_time_utils.dart
+│       image_constant_utils.dart
+│       navigator_service.dart
+│       size_utils.dart
+│
+├───widgets
+│   │   base_button.dart
+│   │   custom_elevated_button.dart
+│   │   custom_icon_button.dart
+│   │   custom_image_view.dart
+│   │   custom_search_view.dart
+│   │
+│   └───app_bar
+│           appbar_title_searchview.dart
+│           appbar_trailing_iconbutton.dart
+│           custom_app_bar.dart
+│
+└───views
+    │   app_navigation_screen.dart
+    │   home_container_screen.dart
+    │   home_tab_container_page.dart
+    │
+    └───home
+            // Maybe later
