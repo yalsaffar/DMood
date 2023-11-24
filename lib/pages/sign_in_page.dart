@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/dynamo_db_handler.dart';
 import 'sign_up_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'home_page.dart'; 
+
 
 import 'welcome_page.dart';
 
@@ -55,7 +57,7 @@ class _SignInPageState extends State<SignInPage> {
         if (userInfo != null && userInfo['password']?.s == password) {
         print('Login successful');
         Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => WelcomePage()),
+      MaterialPageRoute(builder: (context) => HomePage()),
       (Route<dynamic> route) => false,
     );
           _showDialog('Login Success', 'Signed in!!!');

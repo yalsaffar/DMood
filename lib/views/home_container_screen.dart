@@ -1,9 +1,11 @@
 import 'package:dmood/app.dart';
 import 'package:dmood/views/home_tab_container_page.dart';
-import 'package:dmood/widgets/widgets/app_bar/custom_bottom_app_bar.dart';
+import 'package:dmood/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/utils/size_utils.dart';
 import 'package:dmood/routes/app_routes.dart';
+
+import '../widgets/custom_bottom_app_bar.dart';
 
 // ignore_for_file: must_be_immutable
 class HomeContainerScreen extends StatelessWidget {
@@ -38,11 +40,11 @@ class HomeContainerScreen extends StatelessWidget {
   ///Handling route based on bottom click actions
   String getCurrentRoute(BottomBarEnum type) {
     switch (type) {
-      case BottomBarEnum.Iconlylighthome:
+      case BottomBarEnum.Home:
         return AppRoutes.homeTabContainerPage;
       case BottomBarEnum.Settings:
         return "/";
-      case BottomBarEnum.Iconlylightplus:
+      case BottomBarEnum.Home:
         return "/";
       case BottomBarEnum.Notification:
         return "/";

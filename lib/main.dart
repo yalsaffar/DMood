@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'models/sign_in_page.dart';
+import 'pages/sign_in_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'pages/home_page.dart';
+import 'views/home_container_screen.dart';
 void main() {
   dotenv.load(fileName: ".env");
   runApp(MyApp());

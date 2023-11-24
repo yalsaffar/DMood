@@ -1,9 +1,6 @@
-import 'package:dmood/app.dart';
-import 'package:dmood/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:dmood/utils/image_constant_utils.dart';
-import 'package:dmood/utils/size_utils.dart';
-import 'package:dmood/views/user_profile_screen.dart';
+import 'package:dmood/routes/app_routes.dart';
+import 'package:dmood/pages/user_profile_screen.dart';
 
 class CustomBottomAppBar extends StatefulWidget {
   CustomBottomAppBar({this.onChanged});
@@ -17,28 +14,28 @@ class CustomBottomAppBar extends StatefulWidget {
 class CustomBottomAppBarState extends State<CustomBottomAppBar> {
   List<BottomMenuModel> bottomMenuList = [
     BottomMenuModel(
-        icon: ImageConstant.imgIconlyLightHome,
-        activeIcon: ImageConstant.imgIconlyLightHome,
-        type: BottomBarEnum.Iconlylighthome,
+        icon: Icons.home,
+        activeIcon: Icons.home,
+        type: BottomBarEnum.Home,
         isSelected: true),
     BottomMenuModel(
-      icon: ImageConstant.imgSettings,
-      activeIcon: ImageConstant.imgSettings,
+      icon: Icons.settings,
+      activeIcon: Icons.settings,
       type: BottomBarEnum.Settings,
     ),
     BottomMenuModel(
-      icon: ImageConstant.imgIconlyLightPlus,
-      activeIcon: ImageConstant.imgIconlyLightPlus,
-      type: BottomBarEnum.Iconlylightplus,
+      icon: Icons.add,
+      activeIcon: Icons.add,
+      type: BottomBarEnum.Add,
     ),
     BottomMenuModel(
-      icon: ImageConstant.imgNotification,
-      activeIcon: ImageConstant.imgNotification,
+      icon: Icons.notifications,
+      activeIcon: Icons.notifications,
       type: BottomBarEnum.Notification,
     ),
     BottomMenuModel(
-      icon: ImageConstant.imgUser,
-      activeIcon: ImageConstant.imgUser,
+      icon: Icons.person,
+      activeIcon: Icons.person,
       type: BottomBarEnum.User,
     )
   ];
@@ -48,7 +45,7 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
       child: SizedBox(
-        height: 105.v,
+        height: 105,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: List.generate(
@@ -73,18 +70,13 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
                     widget.onChanged?.call(bottomMenuList[index].type);
                   }
                 },
-                child: bottomMenuList[index].isSelected
-                    ? CustomImageView(
-                        imagePath: bottomMenuList[index].activeIcon,
-                        height: 24.adaptSize,
-                        width: 24.adaptSize,
-                      )
-                    : CustomImageView(
-                        imagePath: bottomMenuList[index].icon,
-                        height: 24.adaptSize,
-                        width: 24.adaptSize,
-                        color: appTheme.gray400,
-                      ),
+                child: Icon(
+                  bottomMenuList[index].isSelected
+                      ? bottomMenuList[index].activeIcon
+                      : bottomMenuList[index].icon,
+                  size: 24,
+                  color: bottomMenuList[index].isSelected ? Colors.blue : Colors.grey,
+                ),
               );
             },
           ),
@@ -92,6 +84,31 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
       ),
     );
   }
+}
+
+enum BottomBarEnum {
+  Home,
+  Settings,
+  Add,
+  Notification,
+  User,
+}
+
+class BottomMenuModel {
+  BottomMenuModel({
+    required this.icon,
+    required this.activeIcon,
+    required this.type,
+    this.isSelected = false,
+  });
+
+  IconData icon;
+
+  IconData activeIcon;
+
+  BottomBarEnum type;
+
+  bool isSelected;
 }
 
 class DefaultWidget extends StatelessWidget {
@@ -105,31 +122,6 @@ class DefaultWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-enum BottomBarEnum {
-  Iconlylighthome,
-  Settings,
-  Iconlylightplus,
-  Notification,
-  User,
-}
-
-class BottomMenuModel {
-  BottomMenuModel({
-    required this.icon,
-    required this.activeIcon,
-    required this.type,
-    this.isSelected = false,
-  });
-
-  String icon;
-
-  String activeIcon;
-
-  BottomBarEnum type;
-
-  bool isSelected;
 }
 
 

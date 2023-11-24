@@ -1,7 +1,7 @@
 import 'package:dmood/app.dart';
-import 'package:dmood/widgets/widgets/app_bar/appbar_title_searchview.dart';
-import 'package:dmood/widgets/widgets/app_bar/appbar_trailing_iconbutton.dart';
-import 'package:dmood/widgets/widgets/app_bar/custom_app_bar.dart';
+import 'package:dmood/widgets/app_bar/appbar_title_searchview.dart';
+import 'package:dmood/widgets/app_bar/appbar_trailing_iconbutton.dart';
+import 'package:dmood/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/utils/size_utils.dart';
 import 'package:dmood/localization/app_localization.dart';

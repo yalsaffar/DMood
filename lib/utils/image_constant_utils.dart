@@ -1,6 +1,6 @@
 class ImageConstant {
   // Image folder path
-  static String imagePath = 'assets/images';
+  static String imagePath = 'images';
 
   // Home images
   static String imgAvatar = '$imagePath/img_avatar.png';

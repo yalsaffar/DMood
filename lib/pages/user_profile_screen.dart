@@ -1,3 +1,4 @@
+import 'package:dmood/widgets/custom_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/app.dart';
 import 'package:dmood/widgets/custom_bottom_app_bar.dart';
@@ -7,15 +8,29 @@ import 'package:dmood/localization/app_localization.dart';
 import 'package:dmood/widgets/custom_elevated_button.dart';
 import 'package:dmood/routes/app_routes.dart';
 
+class CustomTextStyles {
+  static const TextStyle bodyLargeBluegray300 = TextStyle();
+  static const TextStyle bodyMediumWhiteA700 = TextStyle(); // Add the missing getter
+  static const TextStyle bodyLarge_1 = TextStyle(); // Add the missing getter
+  static const TextStyle bodyLargeGray400_1 = TextStyle(); // Add the missing getter
+}
 
+class ImageConstant {
+  static const String imgGlobe1 = 'path_to_imgGlobe1'; // Add the missing constant
+  static const String imgUInstagram = 'path_to_imgUInstagram'; // Add the missing constant
+  static const String imgFacebook = 'path_to_imgFacebook'; // Add the missing constant
+  static const String imgGroup6999 = 'path_to_imgGroup6999'; // Add the missing constant
+  static const String imgMaskGroup = 'path_to_imgMaskGroup'; // Add the missing constant
+  static const String imgSettingsWhiteA700 = 'path_to_imgSettingsWhiteA700'; // Add the missing constant
+  static const String imgEllipse194 = 'path_to_imgEllipse194'; // Add the missing constant
+}
 
-// ignore: must_be_immutable
+class BorderRadiusStyle {
+  static var myVariable;
+}
+
 class UserProfileScreen extends StatelessWidget {
-  UserProfileScreen({Key? key})
-      : super(
-
-          key: key,
-        );
+  UserProfileScreen({Key? key}) : super(key: key);
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
@@ -205,7 +220,7 @@ class UserProfileScreen extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 14.h),
       padding: EdgeInsets.symmetric(vertical: 9.v),
       decoration: AppDecoration.fillGray.copyWith(
-        borderRadius: BorderRadiusStyle.roundedBorder6,
+        borderRadius: BorderRadius.circular(10.0),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -224,7 +239,7 @@ class UserProfileScreen extends StatelessWidget {
                   ),
                   TextSpan(
                     text: "lbl_followers".tr,
-                    style: CustomTextStyles.bodyLargeGray400,
+                    style: CustomTextStyles.bodyLargeGray400_1,
                   ),
                 ],
               ),
@@ -243,7 +258,7 @@ class UserProfileScreen extends StatelessWidget {
                 ),
                 TextSpan(
                   text: "lbl_following".tr,
-                  style: CustomTextStyles.bodyLargeGray400,
+                  style: CustomTextStyles.bodyLargeGray400_1,
                 ),
               ],
             ),
@@ -299,12 +314,11 @@ class UserProfileScreen extends StatelessWidget {
   ///Handling route based on bottom click actions
   String getCurrentRoute(BottomBarEnum type) {
     switch (type) {
-      case BottomBarEnum.Iconlylighthome:
+      case BottomBarEnum.Home:
         return AppRoutes.homeTabContainerPage;
       case BottomBarEnum.Settings:
         return "/";
-      case BottomBarEnum.Iconlylightplus:
-        return "/";
+      case BottomBarEnum.Home:
       case BottomBarEnum.Notification:
         return "/";
       case BottomBarEnum.User:
