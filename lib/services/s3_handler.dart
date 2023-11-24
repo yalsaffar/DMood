@@ -8,9 +8,9 @@ class S3Handler {
   final String awsRegion;
 
   S3Handler()
-      : awsAccessKeyId = dotenv.env['AWS_ACCESS_KEY_ID']!,
-        awsSecretAccessKey = dotenv.env['AWS_SECRET_ACCESS_KEY']!,
-        awsRegion = dotenv.env['AWS_REGION']!;
+      : awsAccessKeyId = dotenv.env['aws_access_key_id']!,
+        awsSecretAccessKey = dotenv.env['aws_secret_access_key']!,
+        awsRegion = dotenv.env['aws_region']!;
 
   Future<void> createS3Bucket(String bucketName) async {
     // Implement S3 bucket creation using HTTP requests
