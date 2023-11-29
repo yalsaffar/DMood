@@ -1,18 +1,11 @@
-import 'package:dmood/app.dart';
-import 'package:dmood/widgets/widgets/app_bar/appbar_title_searchview.dart';
-import 'package:dmood/widgets/widgets/app_bar/appbar_trailing_iconbutton.dart';
-import 'package:dmood/widgets/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:dmood/utils/size_utils.dart';
-import 'package:dmood/localization/app_localization.dart';
+import 'package:dmood/widgets/post_widget.dart';
 import 'package:dmood/utils/image_constant_utils.dart';
+import 'package:dmood/views/home_page.dart';
 
-// ignore_for_file: must_be_immutable
+
 class HomeTabContainerPage extends StatefulWidget {
-  const HomeTabContainerPage({Key? key})
-      : super(
-          key: key,
-        );
+  const HomeTabContainerPage({Key? key}) : super(key: key);
 
   @override
   HomeTabContainerPageState createState() => HomeTabContainerPageState();
@@ -21,7 +14,6 @@ class HomeTabContainerPage extends StatefulWidget {
 class HomeTabContainerPageState extends State<HomeTabContainerPage>
     with TickerProviderStateMixin {
   TextEditingController searchController = TextEditingController();
-
   late TabController tabviewController;
 
   @override
@@ -32,101 +24,64 @@ class HomeTabContainerPageState extends State<HomeTabContainerPage>
 
   @override
   Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
-
     return SafeArea(
       child: Scaffold(
-        appBar: _buildAppBar(context),
-        body: SizedBox(
-          width: mediaQueryData.size.width,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildTabview(context),
-                SizedBox(
-                  height: 551.v,
-                  child: TabBarView(
-                    controller: tabviewController,
-                    children: [
-                      HomePage(),
-                      HomePage(),
-                      HomePage(),
-                    ],
-                  ),
-                ),
-              ],
+        appBar: _buildAppBar(),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildTabview(),
+            Expanded(
+              child: TabBarView(
+                controller: tabviewController,
+                children: [
+                  HomePage(),
+                  HomePage(),
+                  HomePage(),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  /// Section Widget
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return CustomAppBar(
-      title: AppbarTitleSearchview(
-        margin: EdgeInsets.only(left: 20.h),
-        hintText: "lbl_search".tr,
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      title: TextField(
+        decoration: InputDecoration(
+          hintText: "Search",
+        ),
         controller: searchController,
       ),
       actions: [
-        AppbarTrailingIconbutton(
-          imagePath: ImageConstant.imgSend,
-          margin: EdgeInsets.fromLTRB(16.h, 12.v, 20.h, 12.v),
+        IconButton(
+          icon: Icon(Icons.send),
+          onPressed: () {},
         ),
       ],
-      styleType: Style.bgFill,
     );
   }
 
-  /// Section Widget
-  Widget _buildTabview(BuildContext context) {
+  Widget _buildTabview() {
     return Container(
-      height: 51.v,
-      width: double.maxFinite,
-      decoration: BoxDecoration(
-        color: appTheme.whiteA700,
-      ),
+      height: 50,
+      color: Colors.white,
       child: TabBar(
         controller: tabviewController,
         labelPadding: EdgeInsets.zero,
-        labelColor: appTheme.indigoA100,
-        labelStyle: TextStyle(
-          fontSize: 16.fSize,
-          fontFamily: 'ABeeZee',
-          fontWeight: FontWeight.w400,
-        ),
-        unselectedLabelColor: appTheme.gray400,
-        unselectedLabelStyle: TextStyle(
-          fontSize: 16.fSize,
-          fontFamily: 'ABeeZee',
-          fontWeight: FontWeight.w400,
-        ),
-        indicatorPadding: EdgeInsets.all(
-          6.0.h,
-        ),
-        indicator: BoxDecoration(
-          color: appTheme.gray10002,
-          borderRadius: BorderRadius.circular(
-            6.h,
-          ),
-        ),
+        labelColor: Colors.blue,
+        unselectedLabelColor: Colors.grey,
         tabs: [
           Tab(
-            child: Text(
-              "lbl_popular".tr,
-            ),
+            child: Text("Popular"),
           ),
           Tab(
-            child: Text(
-              "lbl_trending".tr,
-            ),
+            child: Text("Trending"),
           ),
           Tab(
-            child: Text(
-              "lbl_following".tr,
-            ),
+            child: Text("Following"),
           ),
         ],
       ),

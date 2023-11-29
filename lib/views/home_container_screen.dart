@@ -1,6 +1,6 @@
 import 'package:dmood/app.dart';
 import 'package:dmood/views/home_tab_container_page.dart';
-import 'package:dmood/widgets/widgets/app_bar/custom_bottom_app_bar.dart';
+import 'package:dmood/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/utils/size_utils.dart';
 import 'package:dmood/routes/app_routes.dart';
@@ -40,7 +40,7 @@ class HomeContainerScreen extends StatelessWidget {
     switch (type) {
       case BottomBarEnum.Iconlylighthome:
         return AppRoutes.homeTabContainerPage;
-      case BottomBarEnum.Settings:
+      case BottomBarEnum.Explore:
         return "/";
       case BottomBarEnum.Iconlylightplus:
         return "/";
