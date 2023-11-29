@@ -24,7 +24,7 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
     BottomMenuModel(
       icon: ImageConstant.imgSettings,
       activeIcon: ImageConstant.imgSettings,
-      type: BottomBarEnum.Settings,
+      type: BottomBarEnum.Explore,
     ),
     BottomMenuModel(
       icon: ImageConstant.imgIconlyLightPlus,
@@ -68,7 +68,15 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
                       context,
                       MaterialPageRoute(builder: (context) => UserProfileScreen()),
                     );
-                  } else {
+                  }  else if(bottomMenuList[index].type == BottomBarEnum.Explore) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ExplorePage()),
+                    );
+                  }
+                  
+                  
+                  else  {
                     // Trigger onChanged for other icons
                     widget.onChanged?.call(bottomMenuList[index].type);
                   }
@@ -109,7 +117,7 @@ class DefaultWidget extends StatelessWidget {
 
 enum BottomBarEnum {
   Iconlylighthome,
-  Settings,
+  Explore,
   Iconlylightplus,
   Notification,
   User,
