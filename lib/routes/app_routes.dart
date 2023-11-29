@@ -18,6 +18,6 @@ class AppRoutes {
   static Map<String, WidgetBuilder> routes = {
     homeContainerScreen: (context) => HomeContainerScreen(),
     userProfileScreen: (context) => UserProfileScreen(),
-    appNavigationScreen: (context) => AppNavigationScreen()
+    //appNavigationScreen: (context) => AppNavigationScreen()
   };
 }
