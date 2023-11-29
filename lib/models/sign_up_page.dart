@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:dmood/services/dynamo_db_handler.dart'; // Ensure this import path is correct
 import 'sign_in_page.dart';
 import 'package:aws_dynamodb_api/dynamodb-2012-08-10.dart';
+import 'package:dmood/views/home_page.dart';
+
 
 import 'welcome_page.dart'; // AWS DynamoDB package
 
@@ -42,7 +44,7 @@ class _SignUpPageState extends State<SignUpPage> {
       try {
       await DynamoDBHandler().addNewUser('Dmood_users', userData);
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => WelcomePage()),
+        MaterialPageRoute(builder: (context) => HomePage()),
         (Route<dynamic> route) => false,
       );
     }catch (e) {
