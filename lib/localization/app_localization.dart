@@ -1,7 +1,6 @@
 import 'package:dmood/localization/en_us_translation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:dmood/app.dart';
 import 'package:dmood/utils/navigator_service.dart';
 
 class AppLocalization {
