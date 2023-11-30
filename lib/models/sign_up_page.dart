@@ -1,3 +1,4 @@
+import 'package:dmood/views/home_container_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/services/dynamo_db_handler.dart'; // Ensure this import path is correct
 import 'sign_in_page.dart';
@@ -44,7 +45,7 @@ class _SignUpPageState extends State<SignUpPage> {
       try {
       await DynamoDBHandler().addNewUser('Dmood_users', userData);
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => HomeContainerScreen()),
         (Route<dynamic> route) => false,
       );
     }catch (e) {
