@@ -1,10 +1,11 @@
 import 'package:dmood/app.dart';
-import 'package:dmood/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/utils/image_constant_utils.dart';
 import 'package:dmood/utils/size_utils.dart';
 import 'package:dmood/views/user_profile_screen.dart';
+import 'package:dmood/views/notifications_screen.dart';
 
+// ignore: must_be_immutable
 class CustomBottomAppBar extends StatefulWidget {
   CustomBottomAppBar({this.onChanged});
 
@@ -72,6 +73,12 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ExplorePage()),
+                    );
+                  }
+                  else if (bottomMenuList[index].type == BottomBarEnum.Notification){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => NotificationsScreen()),
                     );
                   }
                   

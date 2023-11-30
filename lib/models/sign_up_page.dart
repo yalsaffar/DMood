@@ -6,8 +6,6 @@ import 'package:aws_dynamodb_api/dynamodb-2012-08-10.dart';
 import 'package:dmood/views/home_page.dart';
 
 
-import 'welcome_page.dart'; // AWS DynamoDB package
-
 class SignUpPage extends StatefulWidget {
   @override
   _SignUpPageState createState() => _SignUpPageState();

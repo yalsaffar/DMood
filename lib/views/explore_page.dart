@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dmood/widgets/post_widget.dart'; // Import your PostWidget here
+import 'package:dmood/widgets/post_widget.dart'; 
 
 class ExplorePage extends StatelessWidget {
   @override

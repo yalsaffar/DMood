@@ -4,8 +4,6 @@ import '../services/dynamo_db_handler.dart';
 import 'sign_up_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'welcome_page.dart';
-
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   runApp(MyApp());

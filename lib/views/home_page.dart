@@ -1,8 +1,4 @@
-import 'package:dmood/app.dart';
 import 'package:flutter/material.dart';
-import 'package:dmood/utils/size_utils.dart';
-import 'package:dmood/utils/image_constant_utils.dart';
-import 'package:dmood/localization/app_localization.dart';
 import 'package:dmood/widgets/post_widget.dart';
 
 class HomePage extends StatelessWidget {

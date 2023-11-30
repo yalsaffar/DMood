@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dmood/views/home_container_screen.dart';
-import 'package:dmood/views/app_navigation_screen.dart';
 import 'package:dmood/views/user_profile_screen.dart';
 
 

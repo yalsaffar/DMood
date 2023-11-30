@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dmood/widgets/post_widget.dart';
-import 'package:dmood/utils/image_constant_utils.dart';
 import 'package:dmood/views/home_page.dart';
 
 
