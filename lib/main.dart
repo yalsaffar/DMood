@@ -1,8 +1,11 @@
 import 'package:dmood/views/post_form_example.dart';
 import 'package:flutter/material.dart';
 import 'models/sign_in_page.dart';
+import 'views/home_container_screen.dart';
+import 'views/home_tab_container_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dmood/services/dynamo_db_posts_handler.dart';
+
 void main() {
   dotenv.load(fileName: ".env");
   runApp(MyApp());
@@ -17,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: PostFormPage(),
+      home: SignInPage(),
     );
   }
 }

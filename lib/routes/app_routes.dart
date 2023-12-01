@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dmood/views/home_container_screen.dart';
 import 'package:dmood/views/user_profile_screen.dart';
-
+import 'package:dmood/views/mood_tracker_screen.dart';
 
 class AppRoutes {
   static const String homePage = '/home_page';
@@ -14,9 +14,12 @@ class AppRoutes {
 
   static const String appNavigationScreen = '/app_navigation_screen';
 
+  static const String moodTrackerScreen = '/mood_tracker_screen';
+
   static Map<String, WidgetBuilder> routes = {
     homeContainerScreen: (context) => HomeContainerScreen(),
     userProfileScreen: (context) => UserProfileScreen(),
+    moodTrackerScreen: (context) => MoodTrackerPage(),
     //appNavigationScreen: (context) => AppNavigationScreen()
   };
 }
