@@ -40,7 +40,7 @@ class HomeContainerScreen extends StatelessWidget {
   String getCurrentRoute(BottomBarEnum type) {
     switch (type) {
       case BottomBarEnum.Iconlylighthome:
-        return AppRoutes.homeTabContainerPage;
+        return AppRoutes.homeContainerScreen;
       case BottomBarEnum.Explore:
         return "/";
       case BottomBarEnum.Iconlylightplus:
