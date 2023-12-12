@@ -19,6 +19,16 @@ class PostsHandler {
       item: postData,
     );
   }
+Future<List<Map<String, AttributeValue>>> getAllPosts(String tableName) async {
+  try {
+    final response = await _dynamoDb.scan(tableName: tableName);
+    return response.items ?? [];
+  } catch (e) {
+    print('Error retrieving all posts: $e');
+    rethrow;
+  }
+}
+
 
   Future<void> updatePost(String tableName, String email, String postId, Map<String, AttributeValueUpdate> updateData) async {
     var key = <String, AttributeValue>{
