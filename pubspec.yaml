@@ -17,8 +17,11 @@ dependencies:
   provider: ^6.0.5
   cached_network_image: ^3.2.1
   intl: ^0.18.0
-  amazon_s3_cognito: ^0.7.4
   image_picker: ^1.0.4
+  amplify_flutter: ^1.6.0
+  amplify_storage_s3: ^1.6.0
+  file_picker: ^6.1.1
+  amplify_auth_cognito: ^1.6.0
 
 dev_dependencies:
   flutter_test:

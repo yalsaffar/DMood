@@ -1,45 +1,39 @@
-import 'dart:io';
-import 'dart:async';
-import 'dart:typed_data';
-import 'package:amazon_s3_cognito/amazon_s3_cognito.dart';
-import 'package:amazon_s3_cognito/image_data.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:path/path.dart' as path;
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:file_picker/file_picker.dart';
 
-class S3Handler {
-  late String awsAccessKeyId;
-  late String awsSecretAccessKey;
-  late String awsRegion;
 
-  S3Handler() {
-    dotenv.load();
-    awsAccessKeyId = dotenv.env['aws_access_key_id']!;
-    awsSecretAccessKey = dotenv.env['aws_secret_access_key']!;
-    awsRegion = dotenv.env['aws_region']!;
-  }
 
-  Future<String?> uploadFileToS3(String filePath, String bucketName, String fileName) async {
-    try {
-      File file = File(filePath);
-      Uint8List fileData = await file.readAsBytes();
+Future<void> uploadImage(String customFileName) async {
+    // Select a file from the device
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      withData: false,
+      // Ensure to get file stream for better performance
+      withReadStream: true,
+      allowedExtensions: ['jpg', 'png', 'gif'],
+    );
 
-      final fileUrl = await AmazonS3Cognito.upload(
-        awsAccessKeyId,
-        awsSecretAccessKey,
-        awsRegion,
-        bucketName,
-        fileData as ImageData,
-      );
-      return getS3ObjectUrl(bucketName, fileName);
-    } catch (e) {
-      print(e);
-      return null;
+    if (result == null) {
+      safePrint('No file selected');
+      return;
     }
-  }
 
-  String getS3ObjectUrl(String bucketName, String objectName) {
-    return 'https://$bucketName.s3.amazonaws.com/$objectName';
-  }
-
-  // Other methods can be implemented similarly if needed
+    // Upload file with its filename as the key
+    final platformFile = result.files.single;
+    try {
+      final result = await Amplify.Storage.uploadFile(
+        localFile: AWSFile.fromStream(
+          platformFile.readStream!,
+          size: platformFile.size,
+        ),
+        key: customFileName, // Use customFileName instead of platformFile.name
+        onProgress: (progress) {
+          safePrint('Fraction completed: ${progress.fractionCompleted}');
+        },
+      ).result;
+      safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
+    } on StorageException catch (e) {
+      safePrint('Error uploading file: $e');
+      rethrow;
+    }
 }

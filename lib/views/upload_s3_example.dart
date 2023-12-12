@@ -1,56 +1,43 @@
-import 'dart:io';
-import 'package:dmood/services/s3_handler.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
+import 'package:dmood/services/s3_handler.dart';
 
-class UploadImagePage extends StatefulWidget {
+class UploadS3Example extends StatefulWidget {
   @override
-  _UploadImagePageState createState() => _UploadImagePageState();
+  _UploadS3ExampleState createState() => _UploadS3ExampleState();
 }
 
-class _UploadImagePageState extends State<UploadImagePage> {
-  final ImagePicker _picker = ImagePicker();
-  String _uploadedFileURL = '';
-  final S3Handler _s3Handler = S3Handler(); // Initialize your S3Handler
-
-  Future<void> _pickAndUploadImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image == null) return;
-
-    String fileName = path.basename(image.path);
-    String bucketName = 'dmood-bucket'; // Replace with your actual bucket name
-
-    // Upload file
-    String? fileUrl = await _s3Handler.uploadFileToS3(image.path, bucketName, fileName);
-    if (fileUrl != null) {
-      setState(() {
-        _uploadedFileURL = fileUrl;
-      });
-    }
-  }
+class _UploadS3ExampleState extends State<UploadS3Example> {
+  final TextEditingController _fileNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload Image to S3'),
+        title: Text('Upload S3 Example'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: _pickAndUploadImage,
-              child: Text('Pick and Upload Image'),
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _fileNameController,
+                decoration: InputDecoration(
+                  labelText: 'Enter File Name for Upload',
+                  border: OutlineInputBorder(),
+                ),
+              ),
             ),
-            SizedBox(height: 20),
-            _uploadedFileURL.isNotEmpty
-                ? Text('Uploaded to: $_uploadedFileURL')
-                : Text('No image uploaded yet'),
+            ElevatedButton(
+              onPressed: () {
+                String customFileName = _fileNameController.text.trim();
+                uploadImage(customFileName);
+              },
+              child: Text('Upload Photo'),
+            ),
           ],
         ),
       ),
     );
-  }
-}
+  }}
