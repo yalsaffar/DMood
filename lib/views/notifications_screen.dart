@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:dmood/views/user_profile_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:dmood/widgets/post_widget.dart'; 
+import 'package:dmood/widgets/post_widget.dart';
 import 'package:dmood/app.dart';
-import 'package:dmood/views/home_tab_container_page.dart';
 import 'package:dmood/widgets/custom_bottom_app_bar.dart';
 import 'package:dmood/routes/app_routes.dart';
 import 'package:dmood/views/mood_tracker_screen.dart';
 
-
-  // ignore: must_be_immutable
-  class NotificationsScreen extends StatelessWidget {
+// ignore: must_be_immutable
+class NotificationsScreen extends StatelessWidget {
   NotificationsScreen({Key? key})
       : super(
-
           key: key,
         );
 
@@ -32,7 +29,6 @@ import 'package:dmood/views/mood_tracker_screen.dart';
       'message': 'commented: "Great post!"',
       'profileImage': 'assets/images/img_avatar.png',
     },
-   
   ];
 
   @override
@@ -77,41 +73,29 @@ import 'package:dmood/views/mood_tracker_screen.dart';
     }
   }
 
-  
- /// Section Widget
-  Widget _buildBottomAppBar(BuildContext context) {
-    return CustomBottomAppBar(onChanged: (BottomBarEnum type) {
-      Navigator.pushNamed(navigatorKey.currentContext!, getCurrentRoute(type));
-    });
-  }
+  // Reusing _buildBottomAppBar from home_container_screen.dart
+}
 
-  ///Handling route based on bottom click actions
-  String getCurrentRoute(BottomBarEnum type) {
-    switch (type) {
-      case BottomBarEnum.Iconlylighthome:
-        return "/";
-      case BottomBarEnum.Explore:
-        return "/";
-      case BottomBarEnum.Iconlylightplus:
-        return AppRoutes.moodTrackerScreen;
-      case BottomBarEnum.Notification:
-         return AppRoutes.moodTrackerScreen;
-      case BottomBarEnum.User:
-        return "/";
-      default:
-        return "/";
-    }
+String getCurrentRoute(BottomBarEnum type) {
+  switch (type) {
+    case BottomBarEnum.Iconlylighthome:
+      return AppRoutes.homeContainerScreen;
+    case BottomBarEnum.Explore:
+      return AppRoutes.explorePage;
+    case BottomBarEnum.Iconlylightplus:
+      return AppRoutes.moodTrackerScreen;
+    case BottomBarEnum.Notification:
+      return AppRoutes.notificationsScreen;
+    case BottomBarEnum.User:
+      return AppRoutes.userProfileScreen;
+    default:
+      return AppRoutes.homePage;
   }
+}
 
-  ///Handling page based on route
-  Widget getCurrentPage(String currentRoute) {
-    switch (currentRoute) {
-      case AppRoutes.homeContainerScreen:
-        return HomeContainerScreen();
-      case AppRoutes.moodTrackerScreen:
-        return MoodTrackerPage();
-      default:
-        return DefaultWidget();
-    }
-  }
+Widget _buildBottomAppBar(BuildContext context) {
+  return CustomBottomAppBar(onChanged: (BottomBarEnum type) {
+    final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+    Navigator.pushNamed(navigatorKey.currentContext!, getCurrentRoute(type));
+  });
 }
