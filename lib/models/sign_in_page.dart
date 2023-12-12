@@ -1,9 +1,9 @@
+import 'package:dmood/views/home_page.dart';
 import 'package:flutter/material.dart';
 import '../services/dynamo_db_handler.dart';
 import 'sign_up_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-import 'welcome_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -49,15 +49,18 @@ class _SignInPageState extends State<SignInPage> {
       print('Valid form. Attempting to log in with $email.');
 
       try {
-        final userInfo = await _dynamoDBHandler.getUserInfo('Dmood_users', email);
+        final userInfo =
+            await _dynamoDBHandler.getUserInfo('Dmood_users', email);
         print('User info retrieved: $userInfo');
 
         if (userInfo != null && userInfo['password']?.s == password) {
-        print('Login successful');
-        Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => WelcomePage()),
-      (Route<dynamic> route) => false,
-    );
+          print('Login successful');
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('email', email);
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => HomePage()),
+            (Route<dynamic> route) => false,
+          );
           _showDialog('Login Success', 'Signed in!!!');
         } else {
           print('Wrong email or password');
@@ -118,7 +121,9 @@ class _SignInPageState extends State<SignInPage> {
                   fillColor: Colors.grey[200],
                 ),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) => value != null && value.isEmpty ? 'Email cannot be empty' : null,
+                validator: (value) => value != null && value.isEmpty
+                    ? 'Email cannot be empty'
+                    : null,
               ),
               SizedBox(height: 16),
               TextFormField(
@@ -134,7 +139,9 @@ class _SignInPageState extends State<SignInPage> {
                   suffixIcon: Icon(Icons.visibility_off),
                 ),
                 obscureText: true,
-                validator: (value) => value != null && value.isEmpty ? 'Password cannot be empty' : null,
+                validator: (value) => value != null && value.isEmpty
+                    ? 'Password cannot be empty'
+                    : null,
               ),
               SizedBox(height: 16),
               TextButton(

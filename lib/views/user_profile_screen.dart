@@ -1,326 +1,305 @@
+import 'package:aws_dynamodb_api/dynamodb-2012-08-10.dart';
+import 'package:dmood/services/dynamo_db_posts_handler.dart';
+import 'package:dmood/services/s3_handler.dart';
+import 'package:dmood/services/s3_photo_getter.dart';
+import 'package:dmood/views/home_page.dart';
+import 'package:dmood/views/mood_tracker_screen.dart';
+import 'package:dmood/views/post_pop_up.dart';
+import 'package:dmood/views/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/app.dart';
 import 'package:dmood/widgets/custom_bottom_app_bar.dart';
-import 'package:dmood/utils/image_constant_utils.dart';
-import 'package:dmood/utils/size_utils.dart';
-import 'package:dmood/localization/app_localization.dart';
-import 'package:dmood/widgets/custom_elevated_button.dart';
 import 'package:dmood/routes/app_routes.dart';
-
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dmood/services/dynamo_db_handler.dart';
 
 // ignore: must_be_immutable
-class UserProfileScreen extends StatelessWidget {
-  UserProfileScreen({Key? key})
-      : super(
+class UserProfileScreen extends StatefulWidget {
+  @override
+  _UserProfileScreenState createState() => _UserProfileScreenState();
+}
 
-          key: key,
-        );
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  String _firstName = '';
+  String _lastName = '';
+  String _location = '';
+  String _email = '';
+  String _profileImageUrl = ''; // New property for the profile image URL
+
+  List<Map<String, AttributeValue>> _userPosts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _loadUserData();
+    await _loadUserPosts();
+    await _loadProfileImage(); // New function to load profile image
+  }
+
+  Future<void> _loadUserPosts() async {
+    final posts = await PostsHandler().getUserPosts('all_posts_test2', _email);
+    setState(() {
+      _userPosts = posts;
+    });
+  }
+
+  Future<void> _loadProfileImage() async {
+    String profileImageFileName =
+        'public/' + '$_firstName$_lastName' + "profile.jpg";
+    _profileImageUrl =
+        await ImageService.retrieveImageUrl(profileImageFileName);
+  }
+
+  Future<void> _uploadProfileImage() async {
+    String profileImageFileName =
+        'public/' + '$_firstName$_lastName' + "profile.jpg";
+    await uploadImage(profileImageFileName);
+    await _loadProfileImage(); // Refresh the profile image URL
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? email = prefs.getString('email');
+    if (email != null) {
+      _email = email;
+      final userData =
+          await DynamoDBHandler().getUserInfo('Dmood_users', email);
+      setState(() {
+        _firstName = userData?['firstName']?.s ?? '';
+        _lastName = userData?['lastName']?.s ?? '';
+        _location = userData?['location']?.s ?? '';
+      });
+    }
+  }
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
-
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: appTheme.whiteA700,
-        body: SizedBox(
-          width: double.maxFinite,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('User Profile'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildHeaderStack(context),
-              SizedBox(height: 15.v),
-              Text(
-                "lbl_bruno_pham2".tr,
-                style: theme.textTheme.titleLarge,
-              ),
-              SizedBox(height: 9.v),
-              Text(
-                "msg_da_nang_vietnam".tr,
-                style: CustomTextStyles.bodyLargeBluegray300,
-              ),
-              SizedBox(height: 21.v),
-              _buildComponentRow(context),
-              SizedBox(height: 20.v),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Stack(
+                alignment: Alignment.bottomRight,
                 children: [
-                  CustomImageView(
-                    imagePath: ImageConstant.imgGlobe1,
-                    height: 20.adaptSize,
-                    width: 20.adaptSize,
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(_profileImageUrl),
                   ),
-                  Container(
-                    height: 6.adaptSize,
-                    width: 6.adaptSize,
-                    margin: EdgeInsets.only(
-                      left: 24.h,
-                      top: 7.v,
-                      bottom: 7.v,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        3.h,
-                      ),
-                      gradient: LinearGradient(
-                        begin: Alignment(1, 1),
-                        end: Alignment(0, 0),
-                        colors: [
-                          appTheme.indigoA100,
-                          appTheme.indigo500,
-                        ],
-                      ),
-                    ),
-                  ),
-                  CustomImageView(
-                    imagePath: ImageConstant.imgUInstagram,
-                    height: 20.adaptSize,
-                    width: 20.adaptSize,
-                    margin: EdgeInsets.only(left: 24.h),
-                  ),
-                  Container(
-                    height: 6.adaptSize,
-                    width: 6.adaptSize,
-                    margin: EdgeInsets.only(
-                      left: 24.h,
-                      top: 7.v,
-                      bottom: 7.v,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        3.h,
-                      ),
-                      gradient: LinearGradient(
-                        begin: Alignment(1, 1),
-                        end: Alignment(0, 0),
-                        colors: [
-                          appTheme.indigoA100,
-                          appTheme.indigo500,
-                        ],
-                      ),
-                    ),
-                  ),
-                  CustomImageView(
-                    imagePath: ImageConstant.imgFacebook,
-                    height: 20.adaptSize,
-                    width: 20.adaptSize,
-                    margin: EdgeInsets.only(left: 24.h),
+                  IconButton(
+                    icon: Icon(Icons.camera_alt, color: Colors.blue),
+                    onPressed: _uploadProfileImage,
                   ),
                 ],
               ),
-              SizedBox(height: 23.v),
-              _buildTabsBarRow(context),
-              SizedBox(height: 47.v),
-              CustomImageView(
-                imagePath: ImageConstant.imgGroup6999,
-                height: 180.v,
-                width: 186.h,
+              SizedBox(height: 20),
+              Text(
+                _firstName + ' ' + _lastName,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              SizedBox(height: 46.v),
+              SizedBox(height: 8),
+              Text(
+                _location,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildFollowersFollowing('220 '),
+                  _buildFollowersFollowing('150 '),
+                ],
+              ),
+              SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildClickableIcon(Icons.camera_alt, () {
+                    // Handle Instagram icon click
+                  }),
+                  _buildClickableIcon(Icons.facebook, () {
+                    // Handle Facebook icon click
+                  }),
+                ],
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Shots',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 20),
+              _buildPostsGrid(),
             ],
           ),
         ),
-        bottomNavigationBar: _buildNavigationBarrBottomAppBar(context),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
+      bottomNavigationBar: _buildBottomAppBar(context),
     );
   }
 
-  /// Section Widget
-  Widget _buildHeaderStack(BuildContext context) {
-    return SizedBox(
-      height: 146.v,
-      width: double.maxFinite,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: SizedBox(
-              height: 106.v,
-              width: double.maxFinite,
-              child: Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  CustomImageView(
-                    imagePath: ImageConstant.imgMaskGroup,
-                    height: 106.v,
-                    width: 375.h,
-                    alignment: Alignment.center,
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        top: 16.v,
-                        right: 16.h,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: 4.v,
-                              bottom: 2.v,
-                            ),
-                            child: Text(
-                              "lbl_brunopham".tr,
-                              style: CustomTextStyles.bodyMediumWhiteA700,
-                            ),
-                          ),
-                          CustomImageView(
-                            imagePath: ImageConstant.imgSettingsWhiteA700,
-                            height: 24.adaptSize,
-                            width: 24.adaptSize,
-                            margin: EdgeInsets.only(left: 101.h),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+  Widget _buildFollowersFollowing(String text) {
+    return Column(
+      children: [
+        Text(
+          text,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
           ),
-          CustomImageView(
-            imagePath: ImageConstant.imgEllipse194,
-            height: 80.adaptSize,
-            width: 80.adaptSize,
-            radius: BorderRadius.circular(
-              40.h,
-            ),
-            alignment: Alignment.bottomCenter,
+        ),
+        SizedBox(height: 4),
+        Text(
+          'Followers',
+          style: TextStyle(
+            color: Colors.grey,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  /// Section Widget
-  Widget _buildComponentRow(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 14.h),
-      padding: EdgeInsets.symmetric(vertical: 9.v),
-      decoration: AppDecoration.fillGray.copyWith(
-        borderRadius: BorderRadiusStyle.roundedBorder6,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(bottom: 1.v),
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "lbl_220".tr,
-                    style: CustomTextStyles.bodyLarge_1,
-                  ),
-                  TextSpan(
-                    text: " ",
-                  ),
-                  TextSpan(
-                    text: "lbl_followers".tr,
-                    style: CustomTextStyles.bodyLargeGray400,
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: "lbl_150".tr,
-                  style: CustomTextStyles.bodyLarge_1,
-                ),
-                TextSpan(
-                  text: " ",
-                ),
-                TextSpan(
-                  text: "lbl_following".tr,
-                  style: CustomTextStyles.bodyLargeGray400,
-                ),
-              ],
-            ),
-            textAlign: TextAlign.left,
-          ),
-        ],
-      ),
+  Widget _buildClickableIcon(IconData icon, Function() onPressed) {
+    return IconButton(
+      icon: Icon(icon),
+      onPressed: onPressed,
+      color: Colors.blue, // Change color as needed
+      iconSize: 40,
     );
   }
 
-  /// Section Widget
-  Widget _buildTabsBarRow(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      padding: EdgeInsets.symmetric(
-        horizontal: 10.h,
-        vertical: 6.v,
-      ),
-      decoration: AppDecoration.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          CustomElevatedButton(
-            width: 177.h,
-            text: "lbl_0_shots".tr,
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              top: 9.v,
-              right: 36.h,
-              bottom: 10.v,
-            ),
-            child: Text(
-              "lbl_10_collections".tr,
-              style: CustomTextStyles.bodyLargeGray400_1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _buildNavigationBarrBottomAppBar(BuildContext context) {
-    return CustomBottomAppBar(
-      onChanged: (BottomBarEnum type) {
-        Navigator.pushNamed(
-            navigatorKey.currentContext!, getCurrentRoute(type));
+  void _showPostPopup(BuildContext context, String imagePath, String caption,
+      String postDate, int likeCount, bool isUpvoted, String postId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PostPopUp(
+          imagePath: imagePath,
+          caption: caption,
+          likeCount: likeCount,
+          userName: _firstName,
+          userLastName: _lastName,
+          postDate: postDate,
+          isUpvoted: isUpvoted,
+          postId: postId,
+          onDelete: (String postId) async {
+            await PostsHandler().deletePost('all_posts_test2', _email, postId);
+            Navigator.of(context).pop(); // Close the popup after deletion
+            //  refresh the list of posts
+            await _loadUserPosts();
+          },
+        );
       },
     );
   }
 
-  ///Handling route based on bottom click actions
   String getCurrentRoute(BottomBarEnum type) {
     switch (type) {
       case BottomBarEnum.Iconlylighthome:
-        return AppRoutes.homeTabContainerPage;
-      case BottomBarEnum.Settings:
-        return "/";
+        return AppRoutes.homeContainerScreen;
+      case BottomBarEnum.Explore:
+        return AppRoutes.explorePage;
       case BottomBarEnum.Iconlylightplus:
-        return "/";
+        return AppRoutes.moodTrackerScreen;
       case BottomBarEnum.Notification:
-        return "/";
+        return AppRoutes.notificationsScreen;
       case BottomBarEnum.User:
-        return "/";
+        return AppRoutes.userProfileScreen;
       default:
-        return "/";
+        return AppRoutes.homePage;
     }
   }
 
-  ///Handling page based on route
-  Widget getCurrentPage(String currentRoute) {
-    switch (currentRoute) {
-      case AppRoutes.homeTabContainerPage:
-        return HomeTabContainerPage();
-      default:
-        return DefaultWidget();
-    }
+  Widget _buildBottomAppBar(BuildContext context) {
+    return CustomBottomAppBar(onChanged: (BottomBarEnum type) {
+      final GlobalKey<NavigatorState> navigatorKey =
+          GlobalKey<NavigatorState>();
+      Navigator.pushNamed(navigatorKey.currentContext!, getCurrentRoute(type));
+    });
+  }
+
+  Widget _buildPostImage(Map<String, AttributeValue> post) {
+    final imagePath = post['post_image_url']?.s ?? '';
+    // Retrieve additional post details
+    final caption = post['post_caption']?.s ?? 'No caption';
+    final postDate = post['post_date']?.s ?? 'Unknown date';
+    final likeCount = post['post_likes']?.n ?? '42';
+    final isUpvoted = post['vote']?.boolValue ?? true;
+    final postId = post['post_id']?.s ?? 'None';
+
+    return FutureBuilder<String>(
+      future: ImageService.retrieveImageUrl(imagePath),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return GestureDetector(
+            onTap: () => _showPostPopup(context, snapshot.data!, caption,
+                postDate, int.parse(likeCount), isUpvoted, postId),
+            child: Container(
+              margin: EdgeInsets.all(4),
+              child: Image.network(
+                snapshot.data!,
+                height: 100,
+                width: 100,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
+    );
+  }
+
+  Widget _buildPostsGrid() {
+    int postCount = _userPosts.length;
+    int rowCount =
+        (postCount / 3).ceil(); // Calculate the number of rows needed
+
+    return Column(
+      children: List.generate(rowCount, (rowIndex) {
+        int startIndex = rowIndex * 3;
+        int endIndex = startIndex + 3;
+        List<Widget> rowItems = _userPosts
+            .sublist(startIndex, endIndex > postCount ? postCount : endIndex)
+            .map((post) => _buildPostImage(post))
+            .toList();
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: rowItems,
+        );
+      }),
+    );
   }
 }

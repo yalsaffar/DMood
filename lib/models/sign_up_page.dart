@@ -1,9 +1,9 @@
+import 'package:dmood/views/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/services/dynamo_db_handler.dart'; // Ensure this import path is correct
 import 'sign_in_page.dart';
 import 'package:aws_dynamodb_api/dynamodb-2012-08-10.dart';
-
-import 'welcome_page.dart'; // AWS DynamoDB package
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -14,6 +14,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _locationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -21,12 +24,18 @@ class _SignUpPageState extends State<SignUpPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text.trim();
+      final firstName = _firstNameController.text.trim();
+      final lastName = _lastNameController.text.trim();
+      final location = _locationController.text.trim();
       final password = _passwordController.text;
 
       if (password != _confirmPasswordController.text) {
@@ -37,18 +46,23 @@ class _SignUpPageState extends State<SignUpPage> {
       final userData = {
         'email': AttributeValue(s: email),
         'password': AttributeValue(s: password),
+        'firstName': AttributeValue(s: firstName),
+        'lastName': AttributeValue(s: lastName),
+        'location': AttributeValue(s: location),
       };
 
       try {
-      await DynamoDBHandler().addNewUser('Dmood_users', userData);
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => WelcomePage()),
-        (Route<dynamic> route) => false,
-      );
-    }catch (e) {
+        await DynamoDBHandler().addNewUser('Dmood_users', userData);
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => HomePage()),
+          (Route<dynamic> route) => false,
+        );
+      } catch (e) {
         print('Error signing up: $e');
         _showDialog('Error', 'Failed to create user.');
       }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('email', email);
     }
   }
 
@@ -142,6 +156,69 @@ class _SignUpPageState extends State<SignUpPage> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Confirm Password cannot be empty';
+                  }
+                  // Additional validation logic can be added here
+                  return null;
+                },
+              ),
+              SizedBox(height: 30),
+              TextFormField(
+                controller: _firstNameController,
+                decoration: InputDecoration(
+                  hintText: 'First Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
+                keyboardType: TextInputType.name,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'First Name cannot be empty';
+                  }
+                  // Additional validation logic can be added here
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _lastNameController,
+                decoration: InputDecoration(
+                  hintText: 'Last Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
+                keyboardType: TextInputType.name,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Last Name cannot be empty';
+                  }
+                  // Additional validation logic can be added here
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _locationController,
+                decoration: InputDecoration(
+                  hintText: 'Location',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
+                keyboardType: TextInputType.streetAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Location cannot be empty';
                   }
                   // Additional validation logic can be added here
                   return null;

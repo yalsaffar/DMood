@@ -1,64 +1,37 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-// import 'package:http/http.dart' as http;
-// STRUCTURE MAKES SENSE, BUT HAVE NOT TEST IT ENTIRLY YET
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:file_picker/file_picker.dart';
 
-class S3Handler {
-  final String awsAccessKeyId;
-  final String awsSecretAccessKey;
-  final String awsRegion;
+Future<void> uploadImage(String customFileName) async {
+  // Select a file from the device
+  final result = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    withData: false,
+    // Ensure to get file stream for better performance
+    withReadStream: true,
+    allowedExtensions: ['jpg', 'png', 'gif'],
+  );
 
-  S3Handler()
-      : awsAccessKeyId = dotenv.env['AWS_ACCESS_KEY_ID']!,
-        awsSecretAccessKey = dotenv.env['AWS_SECRET_ACCESS_KEY']!,
-        awsRegion = dotenv.env['AWS_REGION']!;
-
-  Future<void> createS3Bucket(String bucketName) async {
-    // Implement S3 bucket creation using HTTP requests
-    // This will require proper request signing
+  if (result == null) {
+    safePrint('No file selected');
+    return;
   }
 
-  Future<bool> uploadFileToS3(String filePath, String bucketName, [String? objectName]) async {
-    // Implement file upload to S3 using HTTP requests
-    // This will require proper request signing
-    // Add your implementation here
-    return true; // Placeholder return statement
-  }
-
-  String getS3ObjectUrl(String bucketName, String objectName) {
-    return 'https://${bucketName}.s3.${awsRegion}.amazonaws.com/${objectName}';
-  }
-
-  Future<String> generatePresignedUrl(String bucketName, String objectName, {int expiration = 3600}) async {
-    // Implement presigned URL generation
-    // This will require proper request signing
-    return ''; // Placeholder return statement
-  }
-
-  Future<void> makeObjectPublic(String bucketName, String objectName) async {
-    // Implement making an object public
-    // This will require proper request signing
-  }
-
-  Future<List<Map<String, dynamic>>> getBucketByName(String bucketName) async {
-    // Implement fetching objects from a bucket
-    // This will require proper request signing
-    return []; // Placeholder return statement
-  }
-
-  Future<List<String>> listAllBuckets() async {
-    // Implement listing all buckets
-    // This will require proper request signing
-    return []; // Placeholder return statement
-  }
-
-  Future<void> deleteFileByName(String bucketName, String objectName) async {
-    // Implement deleting a file by name
-    // This will require proper request signing
-  }
-
-  Future<List<String>> listAllFilesNames(String bucketName) async {
-    // Implement listing all file names in a bucket
-    // This will require proper request signing
-    return []; // Placeholder return statement
+  // Upload file with its filename as the key
+  final platformFile = result.files.single;
+  try {
+    final result = await Amplify.Storage.uploadFile(
+      localFile: AWSFile.fromStream(
+        platformFile.readStream!,
+        size: platformFile.size,
+      ),
+      key: customFileName, // Use customFileName instead of platformFile.name
+      onProgress: (progress) {
+        safePrint('Fraction completed: ${progress.fractionCompleted}');
+      },
+    ).result;
+    safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
+  } on StorageException catch (e) {
+    safePrint('Error uploading file: $e');
+    rethrow;
   }
 }

@@ -1,166 +1,118 @@
-import 'package:dmood/app.dart';
+import 'package:dmood/services/dynamo_db_handler.dart';
+import 'package:dmood/services/dynamo_db_posts_handler.dart';
+import 'package:dmood/services/s3_photo_getter.dart';
+import 'package:dmood/widgets/custom_post_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:dmood/utils/size_utils.dart';
-import 'package:dmood/utils/image_constant_utils.dart';
-import 'package:dmood/localization/app_localization.dart';
+import 'package:dmood/app.dart';
+import 'package:dmood/routes/app_routes.dart';
+import 'package:dmood/widgets/custom_bottom_app_bar.dart';
 
-// ignore_for_file: must_be_immutable
+//ExplorePage
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key})
-      : super(
-          key: key,
-        );
-
   @override
-  HomePageState createState() => HomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin<HomePage> {
+class _HomePageState extends State<HomePage> {
+  Future<List<Map<String, dynamic>>>? _postsFuture;
+
   @override
-  bool get wantKeepAlive => true;
+  void initState() {
+    super.initState();
+    _postsFuture = _fetchAllPosts();
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchAllPosts() async {
+    var posts = await PostsHandler().getAllPosts("all_posts_test2");
+    List<Map<String, dynamic>> fullPosts = [];
+
+    for (var post in posts) {
+      var email = post['email']?.s ?? '';
+      var userInfo = await DynamoDBHandler().getUserInfo('Dmood_users', email);
+      var firstName = userInfo?['firstName']?.s ?? '';
+      var lastName = userInfo?['lastName']?.s ?? '';
+      var profileImageUrl = ImageService.retrieveImageUrl('public/$firstName$lastName' + "profile.jpg");
+      var postImageUrl = ImageService.retrieveImageUrl(post['post_image_url']?.s ?? '');
+      fullPosts.add({
+        'username': '$firstName $lastName',
+        'userImage': profileImageUrl,
+        'postImage': postImageUrl,
+        'description': post['post_caption']?.s ?? 'No caption',
+        'location': post['location']?.s ?? 'No location',
+        'date': post['post_date']?.s ?? 'No date',
+        'time': post['post_time']?.s ?? 'No time',
+        'vote': post['vote']?.s ?? 'upvote',
+        'likes': post['likes']?.n ?? 0,
+
+        // Add other post details as needed
+      });
+    }
+
+    return fullPosts;
+  }
+
   @override
   Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
-
-    return SafeArea(
-      child: Scaffold(
-        body: SizedBox(
-          width: mediaQueryData.size.width,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 19.v),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.h),
-                  child: Column(
-                    children: [
-                      _buildFrame(context),
-                      SizedBox(height: 16.v),
-                      _buildFrame(context),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Home Page"),
+        centerTitle: true, // Add this line to center the title
       ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _postsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var post = snapshot.data![index];
+                return CustomPostWidget(
+                  username: post['username'],
+                  userImageFuture: post['userImage'],
+                  postImageFuture: post['postImage'],
+                  description: post['description'],
+                  location: post['location'],
+                  date: post['date'],
+                  time: post['time'],
+                  vote: post['vote'],
+                  likes: post['likes'],
+                );
+              },
+            );
+          } else {
+            return Center(child: Text("No posts found"));
+          }
+        },
+      ),
+      bottomNavigationBar: _buildBottomAppBar(context),
     );
   }
 
-  /// Common widget
-  Widget _buildFrame(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadiusStyle.roundedBorder10,
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 14.h,
-              vertical: 10.v,
-            ),
-            decoration: AppDecoration.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                CustomImageView(
-                  imagePath: ImageConstant.imgAvatar,
-                  height: 30.adaptSize,
-                  width: 30.adaptSize,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: 10.h,
-                    top: 4.v,
-                    bottom: 6.v,
-                  ),
-                  child: Text(
-                    "lbl_bruno".tr,
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                ),
-                CustomImageView(
-                  imagePath: ImageConstant.imgArrowDown,
-                  height: 16.v,
-                  width: 14.h,
-                  margin: EdgeInsets.only(
-                    left: 6.h,
-                    top: 9.v,
-                    bottom: 5.v,
-                  ),
-                ),
-                Spacer(),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: 7.v,
-                    bottom: 5.v,
-                  ),
-                  child: Text(
-                    "lbl_1_hour_ago".tr,
-                    style: CustomTextStyles.bodyMediumGray400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          CustomImageView(
-            imagePath: ImageConstant.imgMsnyz9l6gs4224x335,
-            height: 224.v,
-            width: 335.h,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 14.h,
-              vertical: 12.v,
-            ),
-            decoration: AppDecoration.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomImageView(
-                  imagePath: ImageConstant.imgPlusCircle1,
-                  height: 20.adaptSize,
-                  width: 20.adaptSize,
-                ),
-                Spacer(),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 2.v),
-                  child: Text(
-                    "lbl_20".tr,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ),
-                CustomImageView(
-                  imagePath: ImageConstant.imgIconlyLightChat,
-                  height: 20.adaptSize,
-                  width: 20.adaptSize,
-                  margin: EdgeInsets.only(left: 6.h),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: 16.h,
-                    bottom: 2.v,
-                  ),
-                  child: Text(
-                    "lbl_125".tr,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ),
-                CustomImageView(
-                  imagePath: ImageConstant.imgHeart2,
-                  height: 20.adaptSize,
-                  width: 20.adaptSize,
-                  margin: EdgeInsets.only(left: 6.h),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+  String getCurrentRoute(BottomBarEnum type) {
+    switch (type) {
+      case BottomBarEnum.Iconlylighthome:
+        return AppRoutes.homeContainerScreen;
+      case BottomBarEnum.Explore:
+        return AppRoutes.explorePage;
+      case BottomBarEnum.Iconlylightplus:
+        return AppRoutes.moodTrackerScreen;
+      case BottomBarEnum.Notification:
+        return AppRoutes.notificationsScreen;
+      case BottomBarEnum.User:
+        return AppRoutes.userProfileScreen;
+      default:
+        return AppRoutes.homePage;
+    }
+  }
+
+  Widget _buildBottomAppBar(BuildContext context) {
+    return CustomBottomAppBar(onChanged: (BottomBarEnum type) {
+      final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+      Navigator.pushNamed(navigatorKey.currentContext!, getCurrentRoute(type));
+    });
   }
 }

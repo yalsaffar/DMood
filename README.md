@@ -1,16 +1,40 @@
-# dmood
+# Dmood App
 
-A new Flutter project.
+## Introduction
+
+Dmood is a social media application focused on mood tracking and sharing experiences. It allows users to post updates, share images, and connect with others.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
+- Flutter environment set up
+- Access to AWS services (DynamoDB, S3)
+- Amplify CLI installed
 
-A few resources to get you started if this is your first Flutter project:
+### Installation
+1. Clone the repository:
+git clone [repository-url]
+2. Navigate to the project directory and install dependencies:
+flutter pub get
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+3. Set up your AWS backend (DynamoDB, S3) and configure your `.env` file with the necessary AWS credentials.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Running the App
+Run the app on a connected device or emulator:
+flutter run
+
+
+## Features
+- User Authentication
+- Mood Tracking
+- Social Feed
+- Profile Customization
+
+## Contributing
+Contributions are welcome! Please read the contribution guidelines first.
+
+
+
+## Acknowledgments
+- Special thanks to the Flutter community
+- Icons and images provided by [icon-source]
