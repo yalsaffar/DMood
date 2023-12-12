@@ -81,6 +81,12 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
                       MaterialPageRoute(builder: (context) => NotificationsScreen()),
                     );
                   }
+                   else if (bottomMenuList[index].type == BottomBarEnum.Iconlylighthome){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeTabContainerPage()),
+                    );
+                  }
                   
                   
                   else  {
@@ -146,10 +152,3 @@ class BottomMenuModel {
 
   bool isSelected;
 }
-
-
-
-
-
-
-

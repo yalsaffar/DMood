@@ -4,6 +4,7 @@ import 'package:dmood/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/utils/size_utils.dart';
 import 'package:dmood/routes/app_routes.dart';
+import 'package:dmood/views/mood_tracker_screen.dart';
 
 // ignore_for_file: must_be_immutable
 class HomeContainerScreen extends StatelessWidget {
@@ -39,11 +40,11 @@ class HomeContainerScreen extends StatelessWidget {
   String getCurrentRoute(BottomBarEnum type) {
     switch (type) {
       case BottomBarEnum.Iconlylighthome:
-        return AppRoutes.homeTabContainerPage;
+        return AppRoutes.homeContainerScreen;
       case BottomBarEnum.Explore:
         return "/";
       case BottomBarEnum.Iconlylightplus:
-        return "/";
+        return AppRoutes.moodTrackerScreen;
       case BottomBarEnum.Notification:
         return "/";
       case BottomBarEnum.User:
@@ -58,6 +59,8 @@ class HomeContainerScreen extends StatelessWidget {
     switch (currentRoute) {
       case AppRoutes.homeTabContainerPage:
         return HomeTabContainerPage();
+      case AppRoutes.moodTrackerScreen:
+        return MoodTrackerPage();
       default:
         return DefaultWidget();
     }

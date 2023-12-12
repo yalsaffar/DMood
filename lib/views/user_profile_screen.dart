@@ -1,3 +1,4 @@
+import 'package:dmood/views/mood_tracker_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/app.dart';
 import 'package:dmood/widgets/custom_bottom_app_bar.dart';
@@ -13,7 +14,7 @@ class UserProfileScreen extends StatelessWidget {
           key: key,
         );
 
-  GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   @override
 Widget build(BuildContext context) {
@@ -86,8 +87,7 @@ Widget build(BuildContext context) {
       ),
     ),
   ),
-    bottomNavigationBar: _buildNavigationBarrBottomAppBar(context, navigatorKey),
-    floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: _buildBottomAppBar(context),
   );
 }
 
@@ -145,29 +145,24 @@ Widget build(BuildContext context) {
       ),
     );
   }
-}
 
 
-
-  /// Section Widget
-  Widget _buildNavigationBarrBottomAppBar(BuildContext context, GlobalKey<NavigatorState> navigatorKey, ) {
-    return CustomBottomAppBar(
-      onChanged: (BottomBarEnum type) {
-        Navigator.pushNamed(
-            navigatorKey.currentContext!, getCurrentRoute(type));
-      },
-    );
+ /// Section Widget
+  Widget _buildBottomAppBar(BuildContext context) {
+    return CustomBottomAppBar(onChanged: (BottomBarEnum type) {
+      Navigator.pushNamed(navigatorKey.currentContext!, getCurrentRoute(type));
+    });
   }
 
   ///Handling route based on bottom click actions
   String getCurrentRoute(BottomBarEnum type) {
     switch (type) {
       case BottomBarEnum.Iconlylighthome:
-        return AppRoutes.homeTabContainerPage;
+        return "/";
       case BottomBarEnum.Explore:
         return "/";
       case BottomBarEnum.Iconlylightplus:
-        return "/";
+         return AppRoutes.moodTrackerScreen;
       case BottomBarEnum.Notification:
         return "/";
       case BottomBarEnum.User:
@@ -180,11 +175,14 @@ Widget build(BuildContext context) {
   ///Handling page based on route
   Widget getCurrentPage(String currentRoute) {
     switch (currentRoute) {
-      case AppRoutes.homeTabContainerPage:
-        return HomeTabContainerPage();
+      case AppRoutes.homeContainerScreen:
+      return HomeContainerScreen();
+
+      case AppRoutes.moodTrackerScreen:
+        return MoodTrackerPage();
       default:
         return DefaultWidget();
     }
   }
 
-
+}

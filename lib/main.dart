@@ -1,5 +1,6 @@
 import 'package:dmood/views/view_s3_example.dart';
 import 'package:flutter/material.dart';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -47,7 +48,9 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+
       home: _amplifyConfigured ? RetrieveImagePage() : CircularProgressIndicator(),
+
     );
   }
 }

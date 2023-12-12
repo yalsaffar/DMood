@@ -10,6 +10,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter # Ensure indentation aligns with flutter_localizations
   cupertino_icons: ^1.0.2
+  shared_preferences: ^2.0.6
+  animated_text_kit: ^4.2.1
   aws_dynamodb_api: ^2.0.0
   flutter_dotenv: ^5.1.0
   http: ^0.13.6
