@@ -34,8 +34,6 @@ flutter run
 Contributions are welcome! Please read the contribution guidelines first.
 
 
-## Support
-For support, contact [support-email].
 
 ## Acknowledgments
 - Special thanks to the Flutter community
