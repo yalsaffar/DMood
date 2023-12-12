@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:aws_dynamodb_api/dynamodb-2012-08-10.dart'; // AWS DynamoDB API
 import 'package:dmood/services/dynamo_db_posts_handler.dart'; // Import your PostsHandler class
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dmood/routes/app_routes.dart';
+import 'package:dmood/widgets/custom_bottom_app_bar.dart';
 
 class MoodTrackerPage extends StatefulWidget {
   @override
@@ -13,7 +15,9 @@ class MoodTrackerPage extends StatefulWidget {
 
 class _MoodTrackerPageState extends State<MoodTrackerPage> {
   final _formKey = GlobalKey<FormState>();
-  final _postsHandler = PostsHandler(); // Initialize your PostsHandler
+  final _postsHandler = PostsHandler();
+  GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  // Initialize your PostsHandler
 
   int upVotes = 0;
   int downVotes = 0;
@@ -167,6 +171,31 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
           ),
         ),
       ),
+      bottomNavigationBar: _buildBottomAppBar(context),
     );
   }
+}
+
+String getCurrentRoute(BottomBarEnum type) {
+  switch (type) {
+    case BottomBarEnum.Iconlylighthome:
+      return AppRoutes.homeContainerScreen;
+    case BottomBarEnum.Explore:
+      return AppRoutes.explorePage;
+    case BottomBarEnum.Iconlylightplus:
+      return AppRoutes.moodTrackerScreen;
+    case BottomBarEnum.Notification:
+      return AppRoutes.notificationsScreen;
+    case BottomBarEnum.User:
+      return AppRoutes.userProfileScreen;
+    default:
+      return AppRoutes.homePage;
+  }
+}
+
+Widget _buildBottomAppBar(BuildContext context) {
+  return CustomBottomAppBar(onChanged: (BottomBarEnum type) {
+    final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+    Navigator.pushNamed(navigatorKey.currentContext!, getCurrentRoute(type));
+  });
 }

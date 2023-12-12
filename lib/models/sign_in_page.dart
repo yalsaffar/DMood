@@ -1,4 +1,5 @@
 import 'package:dmood/app.dart';
+import 'package:dmood/views/home_page.dart';
 import 'package:flutter/material.dart';
 import '../services/dynamo_db_handler.dart';
 import 'sign_up_page.dart';
@@ -58,7 +59,7 @@ class _SignInPageState extends State<SignInPage> {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('email', email);
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => HomeContainerScreen()),
+            MaterialPageRoute(builder: (context) => HomePage()),
             (Route<dynamic> route) => false,
           );
           _showDialog('Login Success', 'Signed in!!!');

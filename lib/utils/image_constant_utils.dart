@@ -38,4 +38,14 @@ class ImageConstant {
   static String imgIconlyLightPlus = '$imagePath/img_iconly_light_plus.png';
 
   static String imageNotFound = 'assets/images/image_not_found.png';
+
+  static String imgIconlyLightSearch = '$imagePath/img_iconly_light_search.png';
+
+  static String imgIconlyLightChat2 = '$imagePath/img_iconly_light_chat_2.png';
+
+  static String imgIconlyLightHome2 = '$imagePath/navigation-home-3.png';
+
+  static String imgIconlyLightHome3 = '$imagePath/img_iconly_light_home_3.png';
+
+  static String explore = '$imagePath/explore.png';
 }

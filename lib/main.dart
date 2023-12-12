@@ -1,6 +1,7 @@
+import 'package:dmood/models/sign_in_page.dart';
 import 'package:dmood/views/view_s3_example.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -8,6 +9,7 @@ import 'amplifyconfiguration.dart'; // Make sure this path is correct
 import 'package:dmood/views/upload_s3_example.dart';
 
 void main() {
+  dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 
@@ -48,9 +50,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: _amplifyConfigured
-          ? RetrieveImagePage()
-          : CircularProgressIndicator(),
+      home: SignInPage(),
     );
   }
 }
