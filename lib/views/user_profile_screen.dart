@@ -1,6 +1,7 @@
 import 'package:aws_dynamodb_api/dynamodb-2012-08-10.dart';
 import 'package:dmood/services/dynamo_db_posts_handler.dart';
 import 'package:dmood/services/s3_photo_getter.dart';
+import 'package:dmood/views/home_page.dart';
 import 'package:dmood/views/mood_tracker_screen.dart';
 import 'package:dmood/views/post_pop_up.dart';
 import 'package:flutter/material.dart';
@@ -221,7 +222,7 @@ void _showPostPopup(BuildContext context, String imagePath, String caption, Stri
   Widget getCurrentPage(String currentRoute) {
     switch (currentRoute) {
       case AppRoutes.homeContainerScreen:
-      return HomeContainerScreen();
+      return HomePage();
 
       case AppRoutes.moodTrackerScreen:
         return MoodTrackerPage();
