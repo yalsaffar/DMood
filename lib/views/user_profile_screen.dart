@@ -1,9 +1,11 @@
 import 'package:aws_dynamodb_api/dynamodb-2012-08-10.dart';
 import 'package:dmood/services/dynamo_db_posts_handler.dart';
+import 'package:dmood/services/s3_handler.dart';
 import 'package:dmood/services/s3_photo_getter.dart';
 import 'package:dmood/views/home_page.dart';
 import 'package:dmood/views/mood_tracker_screen.dart';
 import 'package:dmood/views/post_pop_up.dart';
+import 'package:dmood/views/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dmood/app.dart';
 import 'package:dmood/widgets/custom_bottom_app_bar.dart';
@@ -22,6 +24,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String _lastName = '';
   String _location = '';
   String _email = '';
+  String _profileImageUrl = ''; // New property for the profile image URL
+
   List<Map<String, AttributeValue>> _userPosts = [];
 
   @override
@@ -33,6 +37,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Future<void> _initializeData() async {
     await _loadUserData();
     await _loadUserPosts();
+    await _loadProfileImage(); // New function to load profile image
   }
 
   Future<void> _loadUserPosts() async {
@@ -40,6 +45,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     setState(() {
       _userPosts = posts;
     });
+  }
+
+  Future<void> _loadProfileImage() async {
+    String profileImageFileName =
+        'public/' + '$_firstName$_lastName' + "profile.jpg";
+    _profileImageUrl =
+        await ImageService.retrieveImageUrl(profileImageFileName);
+  }
+
+  Future<void> _uploadProfileImage() async {
+    String profileImageFileName =
+        'public/' + '$_firstName$_lastName' + "profile.jpg";
+    await uploadImage(profileImageFileName);
+    await _loadProfileImage(); // Refresh the profile image URL
   }
 
   Future<void> _loadUserData() async {
@@ -64,6 +83,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('User Profile'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -71,9 +101,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage('assets/images/img_avatar.png'),
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(_profileImageUrl),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.camera_alt, color: Colors.blue),
+                    onPressed: _uploadProfileImage,
+                  ),
+                ],
               ),
               SizedBox(height: 20),
               Text(
@@ -184,9 +223,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  /// Section Widget
-
-  ///Handling route based on bottom click actions
   String getCurrentRoute(BottomBarEnum type) {
     switch (type) {
       case BottomBarEnum.Iconlylighthome:
