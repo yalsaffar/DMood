@@ -48,9 +48,9 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-
-      home: _amplifyConfigured ? RetrieveImagePage() : CircularProgressIndicator(),
-
+      home: _amplifyConfigured
+          ? RetrieveImagePage()
+          : CircularProgressIndicator(),
     );
   }
 }
