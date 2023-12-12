@@ -10,17 +10,20 @@ class PostsHandler {
       secretKey: dotenv.env['aws_secret_access_key']!,
     );
 
-    _dynamoDb = DynamoDB(region: dotenv.env['aws_region']!, credentials: credentials);
+    _dynamoDb =
+        DynamoDB(region: dotenv.env['aws_region']!, credentials: credentials);
   }
 
-  Future<void> addNewPost(String tableName, Map<String, AttributeValue> postData) async {
+  Future<void> addNewPost(
+      String tableName, Map<String, AttributeValue> postData) async {
     await _dynamoDb.putItem(
       tableName: tableName,
       item: postData,
     );
   }
 
-  Future<void> updatePost(String tableName, String email, String postId, Map<String, AttributeValueUpdate> updateData) async {
+  Future<void> updatePost(String tableName, String email, String postId,
+      Map<String, AttributeValueUpdate> updateData) async {
     var key = <String, AttributeValue>{
       'email': AttributeValue(s: email),
       'post_id': AttributeValue(s: postId)
@@ -32,7 +35,8 @@ class PostsHandler {
     );
   }
 
-  Future<Map<String, AttributeValue>?> getPostInfo(String tableName, String email, String postId) async {
+  Future<Map<String, AttributeValue>?> getPostInfo(
+      String tableName, String email, String postId) async {
     final response = await _dynamoDb.getItem(
       tableName: tableName,
       key: {
@@ -43,13 +47,12 @@ class PostsHandler {
     return response.item;
   }
 
-  Future<List<Map<String, AttributeValue>>> getUserPosts(String tableName, String email) async {
+  Future<List<Map<String, AttributeValue>>> getUserPosts(
+      String tableName, String email) async {
     final response = await _dynamoDb.query(
       tableName: tableName,
       keyConditionExpression: 'email = :email',
-      expressionAttributeValues: {
-        ':email': AttributeValue(s: email)
-      },
+      expressionAttributeValues: {':email': AttributeValue(s: email)},
     );
     return response.items ?? [];
   }

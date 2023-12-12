@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' show basename;
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:aws_dynamodb_api/dynamodb-2012-08-10.dart'; // AWS DynamoDB API
@@ -7,6 +8,10 @@ import 'package:dmood/services/dynamo_db_posts_handler.dart'; // Import your Pos
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dmood/routes/app_routes.dart';
 import 'package:dmood/widgets/custom_bottom_app_bar.dart';
+import 'package:dmood/services/s3_handler.dart';
+import 'package:dmood/views/view_s3_example.dart';
+import 'package:dmood/services/s3_photo_getter.dart';
+import 'dart:io';
 
 class MoodTrackerPage extends StatefulWidget {
   @override
@@ -24,7 +29,9 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
   String moodNote = '';
   XFile? mediaFile;
   String mood = '';
-  String post_id = ''; // For storing the mood (upvote/downvote)
+  String post_id = '';
+  String _imageUrl = '';
+  String fullurl = ''; // For storing the mood (upvote/downvote)
 
   void _handleVote(bool isUpVote) {
     setState(() {
@@ -35,15 +42,17 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
   void _handleMediaUpload() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    String imageurl = basename(image!.path);
+    await uploadImage("public/" + imageurl);
     setState(() {
-      mediaFile = image;
+      _imageUrl = imageurl;
     });
   }
 
-  String generateUniqueId(String userId) {
-    var timestamp = DateTime.now().millisecondsSinceEpoch;
-    return "$userId-$timestamp";
-  }
+  // Use the image URL as needed
+
+  // Upload the file and get the URL
+  // final String _imageUrl = await uploadImage(_imageUrl);
 
   void _submitForm() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -56,8 +65,8 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       'post_caption': AttributeValue(s: moodNote),
       'post_date': AttributeValue(s: currentDateTime.split(' – ')[0]),
       'post_time': AttributeValue(s: currentDateTime.split(' – ')[1]),
-      'post_id': AttributeValue(s: generateUniqueId(email!)),
-      if (mediaFile != null) 'media_url': AttributeValue(s: mediaFile!.path),
+      'post_id': AttributeValue(s: _imageUrl),
+      'post_image_url': AttributeValue(s: "public/" + _imageUrl),
     };
 
     try {
@@ -65,6 +74,21 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       _showDialog('Success', 'Your mood has been successfully recorded.');
     } catch (e) {
       _showDialog('Error', 'Failed to record your mood: $e');
+    }
+  }
+
+  Future<void> _retrieveImageUrl(String fileName) async {
+    try {
+      // Replace with your actual S3 bucket base URL
+      String baseUrl =
+          'https://dmood-bucket10714-dev.s3.us-west-1.amazonaws.com/public/';
+      String completeUrl = baseUrl + fileName;
+      setState(() {
+        fullurl = completeUrl;
+        print(fullurl); // Directly set the complete URL
+      });
+    } catch (e) {
+      print('Error forming URL: $e');
     }
   }
 
@@ -141,9 +165,16 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _handleMediaUpload,
-                  child: Text('Upload Media'),
-                ),
+                    onPressed: () {
+                      _handleMediaUpload();
+                      _retrieveImageUrl(_imageUrl);
+                    },
+                    child: Text('Upload Image')),
+                SizedBox(height: 20),
+                Image.network(fullurl, fit: BoxFit.cover),
+
+                SizedBox(height: 20),
+
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextField(
@@ -159,12 +190,6 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                 ElevatedButton(
                   onPressed: _submitForm,
                   child: Text('Submit Mood'),
-                ),
-                Container(
-                  height: 100,
-                  color: Colors.grey[200],
-                  child: Center(
-                      child: Text('Mood History Visualization Placeholder')),
                 ),
               ],
             ),

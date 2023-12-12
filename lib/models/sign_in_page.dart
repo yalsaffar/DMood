@@ -1,4 +1,3 @@
-import 'package:dmood/app.dart';
 import 'package:dmood/views/home_page.dart';
 import 'package:flutter/material.dart';
 import '../services/dynamo_db_handler.dart';

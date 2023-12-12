@@ -1,4 +1,5 @@
 import 'package:dmood/models/sign_in_page.dart';
+import 'package:dmood/views/mood_tracker_screen.dart';
 import 'package:dmood/views/view_s3_example.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
