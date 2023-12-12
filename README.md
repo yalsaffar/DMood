@@ -33,8 +33,6 @@ flutter run
 ## Contributing
 Contributions are welcome! Please read the contribution guidelines first.
 
-## License
-This project is licensed under the [LICENSE.md](LICENSE.md).
 
 ## Support
 For support, contact [support-email].
