@@ -48,8 +48,8 @@ class CustomPostWidget extends StatelessWidget {
             title: Text(username, style: TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text('$location · $date · $time'),
             trailing: Icon(
-              vote == 'up' ? Icons.thumb_up : Icons.thumb_down,
-              color: vote == 'up' ? Colors.green : Colors.red,
+              vote == 'upvote' ? Icons.thumb_up : Icons.thumb_down,
+              color: vote == 'upvote' ? Colors.green : Colors.red,
             ),
           ),
           Padding(
